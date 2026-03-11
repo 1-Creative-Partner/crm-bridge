@@ -1,0 +1,13 @@
+{
+  "name": "crm-bridge",
+  "version": "1.1.0",
+  "description": "CRM Bridge MCP Server + Webhook Receivers — Cloudflare Worker",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
