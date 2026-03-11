@@ -7,12 +7,5 @@ compatibility_flags = ["nodejs_compat"]
 GHL_CP_LOCATION_ID = "VpL3sVe4Vb1ANBx9DOL6"
 GHL_JUMPSTART_LOC_ID = "C6ALWYCMrzuUGZQWGS33"
 
-# Secrets — set via: wrangler secret put SECRET_NAME
-# SUPABASE_URL
-# SUPABASE_SERVICE_KEY
-# GHL_AGENCY_PIT
-# GHL_CP_PIT
-# GHL_BAILEY_PIT
-# GHL_JUMPSTART_PIT
-# INNGEST_EVENT_KEY
-# CLICKUP_WEBHOOK_SECRET   (returned when webhook is registered)
+# Secrets set via: wrangler secret put NAME
+# Last updated: 2026-03-11
