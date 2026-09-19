@@ -597,6 +597,54 @@ const TOOLS = [
       required: ['projectId', 'subject', 'content']
     }
   },
+  {
+    name: 'bc_get_document',
+    description: 'Get a Basecamp document by ID',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectId:  { type: 'string' },
+        documentId: { type: 'string' }
+      },
+      required: ['projectId', 'documentId']
+    }
+  },
+  {
+    name: 'bc_list_documents',
+    description: 'List documents in a Basecamp project vault',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectId: { type: 'string' },
+        vaultId:   { type: 'string' }
+      },
+      required: ['projectId']
+    }
+  },
+  {
+    name: 'bc_list_messages',
+    description: 'List messages on a Basecamp project message board',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectId:      { type: 'string' },
+        messageBoardId: { type: 'string' }
+      },
+      required: ['projectId']
+    }
+  },
+  {
+    name: 'bc_list_comments',
+    description: 'List comments on a Basecamp recording (document, message, todo, etc.)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectId:   { type: 'string' },
+        recordingId: { type: 'string' }
+      },
+      required: ['projectId', 'recordingId']
+    }
+  },
   // N8N
   {
     name: 'n8n_execute_workflow',
@@ -769,6 +817,30 @@ async function executeTool(name, args, env) {
         subject: args.subject, content: args.content, status: args.status || 'active'
       });
     }
+    case 'bc_get_document':
+      return bcRequest(env, 'GET', `/buckets/${args.projectId}/documents/${args.documentId}.json`);
+    case 'bc_list_documents': {
+      let vaultId = args.vaultId;
+      if (!vaultId) {
+        const project = await bcRequest(env, 'GET', `/projects/${args.projectId}.json`);
+        const vault = project.dock?.find(d => d.name === 'vault');
+        if (!vault) throw new Error('No vault found in project');
+        vaultId = vault.id;
+      }
+      return bcRequest(env, 'GET', `/buckets/${args.projectId}/vaults/${vaultId}/documents.json`);
+    }
+    case 'bc_list_messages': {
+      let messageBoardId = args.messageBoardId;
+      if (!messageBoardId) {
+        const project = await bcRequest(env, 'GET', `/projects/${args.projectId}.json`);
+        const mb = project.dock?.find(d => d.name === 'message_board');
+        if (!mb) throw new Error('No message board found');
+        messageBoardId = mb.id;
+      }
+      return bcRequest(env, 'GET', `/buckets/${args.projectId}/message_boards/${messageBoardId}/messages.json`);
+    }
+    case 'bc_list_comments':
+      return bcRequest(env, 'GET', `/buckets/${args.projectId}/recordings/${args.recordingId}/comments.json`);
     case 'n8n_execute_workflow': {
       const KNOWN = {
         'session-enforcement':        'https://creativepartneros.app.n8n.cloud/webhook/session-enforcement',
